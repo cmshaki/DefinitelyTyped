@@ -65,10 +65,10 @@ export type AdvancedComponentDecorator<TProps, TOwnProps> =
  */
 export type Matching<InjectedProps, DecorationTargetProps> = {
     [P in keyof DecorationTargetProps]: P extends keyof InjectedProps
-        ? InjectedProps[P] extends DecorationTargetProps[P]
-            ? DecorationTargetProps[P]
-            : InjectedProps[P]
-        : DecorationTargetProps[P];
+    ? InjectedProps[P] extends DecorationTargetProps[P]
+    ? DecorationTargetProps[P]
+    : InjectedProps[P]
+    : DecorationTargetProps[P];
 };
 
 /**
@@ -96,9 +96,9 @@ export type GetProps<C> = C extends ComponentType<infer P> ? P : never;
 export type ConnectedComponentClass<
     C extends ComponentType<any>,
     P
-> = ComponentClass<JSX.LibraryManagedAttributes<C, P>> & hoistNonReactStatics.NonReactStatics<C> & {
-    WrappedComponent: C;
-};
+    > = ComponentClass<JSX.LibraryManagedAttributes<C, Partial<P>>> & hoistNonReactStatics.NonReactStatics<C> & {
+        WrappedComponent: C;
+    };
 
 // Injects props and removes them from the prop requirements.
 // Will not pass through the injected props if they are passed in during
@@ -116,22 +116,22 @@ export type InferableComponentEnhancer<TInjectedProps> =
 
 export type InferThunkActionCreatorType<TActionCreator extends (...args: any[]) => any> =
     TActionCreator extends (...args: infer TParams) => (...args: any[]) => infer TReturn
-        ? (...args: TParams) => TReturn
-        : TActionCreator;
+    ? (...args: TParams) => TReturn
+    : TActionCreator;
 
 export type HandleThunkActionCreator<TActionCreator> =
     TActionCreator extends (...args: any[]) => any
-        ? InferThunkActionCreatorType<TActionCreator>
-        : TActionCreator;
+    ? InferThunkActionCreatorType<TActionCreator>
+    : TActionCreator;
 
 // redux-thunk middleware returns thunk's return value from dispatch call
 // https://github.com/reduxjs/redux-thunk#composition
 export type ResolveThunks<TDispatchProps> =
     TDispatchProps extends { [key: string]: any }
-        ? {
-            [C in keyof TDispatchProps]: HandleThunkActionCreator<TDispatchProps[C]>
-        }
-        : TDispatchProps;
+    ? {
+        [C in keyof TDispatchProps]: HandleThunkActionCreator<TDispatchProps[C]>
+    }
+    : TDispatchProps;
 
 // the conditional type is to support TypeScript 3.0, which does not support mapping over tuples and arrays;
 // once the typings are updated to at least TypeScript 3.1, a simple mapped type can replace this mess
